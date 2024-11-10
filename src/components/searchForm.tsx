@@ -1,7 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import { ScoreId } from "@/consts/scores";
 import { For, HStack } from "@chakra-ui/react";
+import { Dispatch, SetStateAction } from "react";
 import { Controller, useForm } from "react-hook-form";
 import SearchSlider from "./searchSlider";
 
@@ -15,16 +18,21 @@ const SCORE_LABELS = [
   { id: "brt", name: "声の明度", low: "暗い", high: "明るい" },
 ] as const;
 
-export default function SearchForm() {
+type Props = {
+  setScores: Dispatch<SetStateAction<Record<ScoreId, [number] | undefined>>>;
+};
+
+export default function SearchForm(props: Props) {
+  const { setScores } = props;
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<Record<(typeof SCORE_LABELS)[number]["id"], number[]>>({
+  } = useForm<Record<(typeof SCORE_LABELS)[number]["id"], [number]>>({
     defaultValues: { gen: [3], lsn: [3], unq: [3], age: [3], clr: [3], pow: [3], brt: [3] },
   });
 
-  const onSubmit = handleSubmit((data) => console.log(data));
+  const onSubmit = handleSubmit(async (data) => setScores(data));
 
   return (
     <HStack as={"form"} onSubmit={onSubmit} maxW={"2xl"} w={"100%"} justify={"space-around"}>
@@ -46,6 +54,7 @@ export default function SearchForm() {
           />
         )}
       </For>
+      <Button type={"submit"}>検索</Button>
     </HStack>
   );
 }

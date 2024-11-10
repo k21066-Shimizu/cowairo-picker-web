@@ -1,13 +1,11 @@
 import { Slider } from "@/components/ui/slider";
+import { ScoreId } from "@/consts/scores";
 import { VStack } from "@chakra-ui/react";
 import { ControllerRenderProps } from "react-hook-form";
 
 type Props = {
   label: { name: string; low: string; high: string };
-  field: ControllerRenderProps<
-    Record<"gen" | "lsn" | "unq" | "age" | "clr" | "pow" | "brt", number[]>,
-    "gen" | "lsn" | "unq" | "age" | "clr" | "pow" | "brt"
-  >;
+  field: ControllerRenderProps<Record<ScoreId, [number]>, ScoreId>;
 };
 
 export default function SearchSlider(props: Props) {
