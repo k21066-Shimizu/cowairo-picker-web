@@ -1,38 +1,63 @@
+import { Checkbox } from "@/components/ui/checkbox";
+import { Field } from "@/components/ui/field";
 import { Slider } from "@/components/ui/slider";
-import { ScoreId } from "@/consts/scores";
+import { SCORE_LABELS, ScoreId } from "@/consts/scores";
 import { VStack } from "@chakra-ui/react";
-import { ControllerRenderProps } from "react-hook-form";
+import { useState } from "react";
+import { Controller, UseFormReturn } from "react-hook-form";
 
 type Props = {
-  label: { name: string; low: string; high: string };
-  field: ControllerRenderProps<Record<ScoreId, [number]>, ScoreId>;
+  label: (typeof SCORE_LABELS)[number];
+  methods: UseFormReturn<Record<ScoreId, [number] | undefined>>;
 };
 
 export default function SearchSlider(props: Props) {
-  const { label, field } = props;
+  const { label, methods } = props;
+  const {
+    control,
+    formState: { errors },
+  } = methods;
+  const [enabled, setEnabled] = useState(true);
 
   return (
-    <VStack>
-      <p>{label.name}</p>
-      <p>{label.high}</p>
-      <Slider
-        height={"200px"}
-        orientation="vertical"
-        defaultValue={[4]}
-        max={7}
-        min={1}
-        step={0.1}
-        onFocusChange={({ focusedIndex }) => {
-          if (focusedIndex !== -1) return;
-          field.onBlur();
-        }}
-        name={field.name}
-        value={field.value}
-        onValueChange={({ value }) => {
-          field.onChange(value);
-        }}
-      />
-      <p>{label.low}</p>
-    </VStack>
+    <Controller
+      key={label.id}
+      name={label.id}
+      control={control}
+      disabled={!enabled}
+      render={({ field }) => (
+        <Field
+          label={`Slider: ${field.value?.[0] ?? "-"}`}
+          invalid={!!errors[label.id]?.length}
+          errorText={errors[label.id]?.[0]?.message}
+        >
+          <VStack>
+            <Checkbox size={"sm"} defaultChecked onCheckedChange={(e) => setEnabled(!!e.checked)}>
+              {label.name}
+            </Checkbox>
+            <p>{label.high}</p>
+            <Slider
+              height={"200px"}
+              orientation="vertical"
+              defaultValue={[4]}
+              max={7}
+              min={1}
+              step={0.1}
+              disabled={!enabled}
+              onFocusChange={({ focusedIndex }) => {
+                if (focusedIndex !== -1) return;
+                field.onBlur();
+              }}
+              name={field.name}
+              value={field.value}
+              onValueChange={({ value }) => {
+                field.onChange(value);
+              }}
+            />
+            <p>{label.low}</p>
+          </VStack>
+        </Field>
+      )}
+    />
   );
 }

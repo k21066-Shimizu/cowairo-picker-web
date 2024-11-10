@@ -20,22 +20,26 @@ export default function VoicebankCard(props: Props) {
           <Table.Header>
             <Table.Row>
               <For each={SCORE_LABELS}>
-                {(label) => <Table.ColumnHeader key={label.id}>{label.name}</Table.ColumnHeader>}
+                {({ id, name }) => <Table.ColumnHeader key={id}>{name}</Table.ColumnHeader>}
               </For>
             </Table.Row>
           </Table.Header>
-          <Table.Row>
-            <For each={SCORE_LABELS}>
-              {(label) => <Table.Cell key={label.id}>{voicebank[label.id]}</Table.Cell>}
-            </For>
-          </Table.Row>
-          <Table.Row>
-            <For each={SCORE_LABELS}>
-              {({ id }) => (
-                <Table.Cell key={id}>{formatScoreDiff(scores[id]?.[0], voicebank[id])}</Table.Cell>
-              )}
-            </For>
-          </Table.Row>
+          <Table.Body>
+            <Table.Row>
+              <For each={SCORE_LABELS}>
+                {({ id }) => <Table.Cell key={id}>{voicebank[id]}</Table.Cell>}
+              </For>
+            </Table.Row>
+            <Table.Row>
+              <For each={SCORE_LABELS}>
+                {({ id }) => (
+                  <Table.Cell key={id}>
+                    {formatScoreDiff(scores[id]?.[0], voicebank[id])}
+                  </Table.Cell>
+                )}
+              </For>
+            </Table.Row>
+          </Table.Body>
         </Table.Root>
       </Card.Body>
     </Card.Root>

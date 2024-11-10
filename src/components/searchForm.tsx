@@ -1,11 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field";
 import { ScoreId } from "@/consts/scores";
 import { For, HStack } from "@chakra-ui/react";
 import { Dispatch, SetStateAction } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import SearchSlider from "./searchSlider";
 
 const SCORE_LABELS = [
@@ -24,35 +23,17 @@ type Props = {
 
 export default function SearchForm(props: Props) {
   const { setScores } = props;
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Record<(typeof SCORE_LABELS)[number]["id"], [number]>>({
+  const methods = useForm<Record<(typeof SCORE_LABELS)[number]["id"], [number] | undefined>>({
     defaultValues: { gen: [3], lsn: [3], unq: [3], age: [3], clr: [3], pow: [3], brt: [3] },
   });
+  const { handleSubmit } = methods;
 
   const onSubmit = handleSubmit(async (data) => setScores(data));
 
   return (
     <HStack as={"form"} onSubmit={onSubmit} maxW={"2xl"} w={"100%"} justify={"space-around"}>
       <For each={SCORE_LABELS}>
-        {(label) => (
-          <Controller
-            key={label.id}
-            name={label.id}
-            control={control}
-            render={({ field }) => (
-              <Field
-                label={`Slider: ${field.value[0]}`}
-                invalid={!!errors[label.id]?.length}
-                errorText={errors[label.id]?.[0]?.message}
-              >
-                <SearchSlider label={label} field={field} />
-              </Field>
-            )}
-          />
-        )}
+        {(label) => <SearchSlider key={label.id} label={label} methods={methods} />}
       </For>
       <Button type={"submit"}>検索</Button>
     </HStack>
