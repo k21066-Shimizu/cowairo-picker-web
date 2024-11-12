@@ -8,7 +8,7 @@ import { Controller, UseFormReturn } from "react-hook-form";
 
 type Props = {
   label: (typeof SCORE_LABELS)[number];
-  methods: UseFormReturn<Record<ScoreId, [number] | undefined>>;
+  methods: UseFormReturn<Record<ScoreId, number | undefined>>;
 };
 
 export default function SearchSlider(props: Props) {
@@ -27,9 +27,9 @@ export default function SearchSlider(props: Props) {
       disabled={!enabled}
       render={({ field }) => (
         <Field
-          label={`Slider: ${field.value?.[0] ?? "-"}`}
-          invalid={!!errors[label.id]?.length}
-          errorText={errors[label.id]?.[0]?.message}
+          label={`Slider: ${field.value ?? "-"}`}
+          invalid={!!errors[label.id]}
+          errorText={errors[label.id]?.message}
         >
           <VStack>
             <Checkbox size={"sm"} defaultChecked onCheckedChange={(e) => setEnabled(!!e.checked)}>
@@ -49,9 +49,9 @@ export default function SearchSlider(props: Props) {
                 field.onBlur();
               }}
               name={field.name}
-              value={field.value}
+              value={field.value == null ? field.value : [field.value]}
               onValueChange={({ value }) => {
-                field.onChange(value);
+                field.onChange(value[0]);
               }}
             />
             <p>{label.low}</p>

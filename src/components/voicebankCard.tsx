@@ -3,7 +3,7 @@ import { Card, For, Table } from "@chakra-ui/react";
 
 type Props = {
   voicebank: ScoreDataItem & { dist: number };
-  scores: Partial<Record<ScoreId, [number]>>;
+  scores: Partial<Record<ScoreId, number>>;
 };
 
 export default function VoicebankCard(props: Props) {
@@ -33,9 +33,7 @@ export default function VoicebankCard(props: Props) {
             <Table.Row>
               <For each={SCORE_LABELS}>
                 {({ id }) => (
-                  <Table.Cell key={id}>
-                    {formatScoreDiff(scores[id]?.[0], voicebank[id])}
-                  </Table.Cell>
+                  <Table.Cell key={id}>{formatScoreDiff(scores[id], voicebank[id])}</Table.Cell>
                 )}
               </For>
             </Table.Row>
