@@ -13,10 +13,8 @@ type Props = {
 
 export default function SearchSlider(props: Props) {
   const { label, methods } = props;
-  const {
-    control,
-    formState: { errors },
-  } = methods;
+  const { control, formState } = methods;
+  const error = formState.errors[label.id];
   const [enabled, setEnabled] = useState(true);
 
   return (
@@ -26,11 +24,7 @@ export default function SearchSlider(props: Props) {
       control={control}
       disabled={!enabled}
       render={({ field }) => (
-        <Field
-          label={`Slider: ${field.value ?? "-"}`}
-          invalid={!!errors[label.id]}
-          errorText={errors[label.id]?.message}
-        >
+        <Field label={field.value ?? "-"} invalid={!!error} errorText={error?.message}>
           <VStack>
             <Checkbox size={"sm"} defaultChecked onCheckedChange={(e) => setEnabled(!!e.checked)}>
               {label.name}

@@ -1,21 +1,47 @@
+import { Avatar } from "@/components/ui/avatar";
 import { SCORE_LABELS, ScoreDataItem, ScoreId } from "@/consts/scores";
-import { Card, For, Table } from "@chakra-ui/react";
+import { Card, For, HStack, IconButton, Spacer, Table } from "@chakra-ui/react";
+import { Dispatch, SetStateAction, useCallback } from "react";
+import { LuSlidersVertical } from "react-icons/lu";
 
 type Props = {
   voicebank: ScoreDataItem & { dist: number };
   scores: Partial<Record<ScoreId, number>>;
+  setScores: Dispatch<SetStateAction<Record<ScoreId, number | undefined>>>;
 };
 
 export default function VoicebankCard(props: Props) {
-  const { voicebank, scores } = props;
+  const { voicebank, scores, setScores } = props;
+  const id = `${voicebank.charactor_name}_${voicebank.version}`;
+  const audioFilePath = `samples/${id}/kaerunouta.wav`;
+  const iconFilePath = `samples/${id}/icon.bmp`;
+
+  const onClickParamCopy = useCallback(() => {
+    setScores({ ...voicebank });
+  }, [setScores, voicebank]);
 
   return (
     <Card.Root w={"2xl"} p={4}>
       <Card.Header>
-        <Card.Title>{voicebank.charactor_name}</Card.Title>
-        <Card.Description>{voicebank.version}</Card.Description>
+        <Card.Title>
+          <HStack>
+            <p>
+              {voicebank.charactor_name} - {voicebank.version}
+            </p>
+            <Spacer />
+            <IconButton size={"xs"} variant={"outline"} onClick={onClickParamCopy}>
+              <LuSlidersVertical />
+            </IconButton>
+          </HStack>
+        </Card.Title>
+        <Card.Description>{voicebank.furigana}</Card.Description>
       </Card.Header>
       <Card.Body>
+        <HStack>
+          <Avatar src={iconFilePath} name={id} size="lg" shape="rounded" />
+          <Spacer />
+          <audio src={audioFilePath} controls />
+        </HStack>
         <Table.Root>
           <Table.Header>
             <Table.Row>

@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <>
-      <SearchForm setScores={setScores} />
+      <SearchForm scores={scores} setScores={setScores} />
       <Stack gap={4} dir="row" w={"full"} alignItems={"center"}>
         {loading ? (
           <div>Loading...</div>
@@ -22,6 +22,7 @@ export default function Home() {
                 key={voicebank.charactor_name + voicebank.version}
                 voicebank={voicebank}
                 scores={scores}
+                setScores={setScores}
               />
             ))
         )}
